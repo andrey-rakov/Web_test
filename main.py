@@ -14,6 +14,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import PasswordField
 from wtforms.fields.html5 import EmailField
+from flask import render_template, url_for, request
 
 
 SqlAlchemyBase = dec.declarative_base()
@@ -149,8 +150,10 @@ def main():
             if user and user.check_password(form.password.data):
                 login_user(user, remember=form.remember_me.data)
                 return redirect(f'/{0}/{0}')
-            return render_template('login.html', message="Неверный логин или пароль", form=form)
-        return render_template('login.html', title='Авторизация', form=form)
+            return render_template('login.html', message="Неверный логин или пароль", form=form,
+                                   link=url_for('static', filename='css/style.css'))
+        return render_template('login.html', title='Авторизация', form=form,
+                               link=url_for('static', filename='css/style.css'))
 
     @app.route("/<int:id_topic>/<int:id_all>")
     @app.route("/index/<int:id_topic>/<int:id_all>")
@@ -224,7 +227,7 @@ def main():
         count_sites[-1] = len(dict_site)
         return render_template("index.html", dict_site=dict_site, name_topics=name_topics,
                                title='Лучшие сайты, отобранные вручную!', id_topic=id_topic,
-                               id_all=id_all, count_sites=count_sites)
+                               id_all=id_all, count_sites=count_sites, link=url_for('static', filename='css/style.css'))
 
     @app.route('/logout')
     @login_required
@@ -238,11 +241,12 @@ def main():
         if form.validate_on_submit():
             if form.password.data != form.password_again.data:
                 return render_template('register.html', title='Регистрация', form=form,
-                                       message="Пароли не совпадают")
+                                       message="Пароли не совпадают", link=url_for('static', filename='css/style.css'))
             session = create_session()
             if session.query(User).filter(User.email == form.email.data).first():
                 return render_template('register.html', title='Регистрация', form=form,
-                                       message="Этот пользователь уже существует")
+                                       message="Этот пользователь уже существует",
+                                       link=url_for('static', filename='css/style.css'))
             user = User(
                 user_login=form.login.data,
                 email=form.email.data,
@@ -252,7 +256,8 @@ def main():
             session.add(user)
             session.commit()
             return redirect('/login')
-        return render_template('register.html', title='Регистрация', form=form)
+        return render_template('register.html', title='Регистрация', form=form,
+                               link=url_for('static', filename='css/style.css'))
 
     @app.route('/0/add_site', methods=['GET', 'POST'])
     def add_site():
@@ -275,7 +280,8 @@ def main():
         else:
             topics = session.query(Topic).filter(Topic.user_id == 1)
         list_topics = sorted([p for p in topics], key=lambda q: q.topic_title)
-        return render_template('add_site.html', title='Добавление сайта', form=add_form, list_topics=list_topics, nid=0)
+        return render_template('add_site.html', title='Добавление сайта', form=add_form, list_topics=list_topics,
+                               nid=0, link=url_for('static', filename='css/style.css'))
 
     @app.route('/site/<int:id>', methods=['GET', 'POST'])
     @login_required
@@ -310,7 +316,7 @@ def main():
             topics = session.query(Topic).filter(Topic.user_id == 1)
         list_topics = sorted([p for p in topics], key=lambda q: q.topic_title)
         return render_template('add_site.html', title='Редактирование сайта', form=form, list_topics=list_topics,
-                               nid=sites.id_topic)
+                               nid=sites.id_topic, link=url_for('static', filename='css/style.css'))
 
     @app.route('/site_delete/<int:id>', methods=['GET', 'POST'])
     @login_required
@@ -336,7 +342,8 @@ def main():
             session.add(topic)
             session.commit()
             return redirect(f'/{0}/{0}')
-        return render_template('add_topic.html', title='Добавление темы', form=add_form)
+        return render_template('add_topic.html', title='Добавление темы', form=add_form,
+                               link=url_for('static', filename='css/style.css'))
 
     @app.route("/0/topics")
     def topics():
@@ -346,7 +353,8 @@ def main():
         else:
             topics = session.query(Topic).filter(Topic.user_id == 1)
         list_topics = sorted([p for p in topics], key=lambda q: q.topic_title)
-        return render_template("topics.html", list_topics=list_topics, title='Список тем')
+        return render_template("topics.html", list_topics=list_topics, title='Список тем',
+                               link=url_for('static', filename='css/style.css'))
 
     @app.route('/topics/<int:id>', methods=['GET', 'POST'])
     @login_required
@@ -368,7 +376,8 @@ def main():
                 return redirect(f'/{0}/{0}')
             else:
                 abort(404)
-        return render_template('add_topic.html', title='Редактирование темы', form=form)
+        return render_template('add_topic.html', title='Редактирование темы', form=form,
+                               link=url_for('static', filename='css/style.css'))
 
     @app.route('/topic_delete/<int:id>', methods=['GET', 'POST'])
     @login_required

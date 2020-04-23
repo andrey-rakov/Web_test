@@ -133,7 +133,7 @@ login_manager.init_app(app)
 
 
 def main():
-    global_init("db/best_links.sqlite")
+    global_init("best_links.sqlite")
 
     @login_manager.user_loader
     def load_user(user_id):

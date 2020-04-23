@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<meta charset="UTF-8">
+
+<h2 align="center">Список тем</h2>
+{% if current_user.is_authenticated %}
+<p align="justify">
+    <a href="/{{0}}/{{0}}" class="btn btn-secondary">Вернуться к списку сайтов</a>
+    <a href="add_topic" class="btn btn-secondary">Добавить тему</a></p>
+{% endif %}
+<div class="table_container">
+    <table class="my_table">
+        <tr class="my_row">
+            <td class="title" width="600px" bgcolor="#dddddd">Название темы</td>
+            <td class="title" width="150px" bgcolor="#dddddd">Настройки</td>
+        </tr>
+        {% for topic in list_topics %}
+        <tr class="my_row">
+            <td class="ordinary" bgcolor="#eeeeff">{{ topic.topic_title.capitalize() }}</td>
+            <td class="ordinary" bgcolor="#eeeeff">
+            {% if current_user.is_authenticated and topic.user_id == current_user.id %}
+                <div>
+                    <a href="/topics/{{ topic.id }}" class="btn btn-outline-secondary">&#9998</a>
+                    <a href="/topic_delete/{{ topic.id }}" class="btn btn-outline-secondary">&#10060</a>
+                </div>
+            {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Добавление сайта</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
+    <p>
+        {{ form.site_address.label }}<br>
+        {{ form.site_address(class="form-control") }}<br>
+        {% for error in form.site_address.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.site_name.label }}<br>
+        {{ form.site_name(class="form-control") }}<br>
+        {% for error in form.site_name.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.id_topic.label }}<br>
+        <select name="id_topic" class="form-control">
+            {% if nid == 0 %}
+                <option selected value="">Выбери тему сайта ...</option>
+            {% endif %}
+            {% for p in list_topics %}
+                {% if nid == p.id %}
+                    <option selected value="{{ p.id }}">{{ p.topic_title }}</option>
+                {% else %}
+                    <option value="{{ p.id }}">{{ p.topic_title }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </p>
+    <p>
+        {{ form.site_description.label }}<br>
+        {{ form.site_description(class="form-control") }}<br>
+        {% for error in form.site_description.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{message}}
+</form>
+{% endblock %}

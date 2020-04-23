@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+<meta charset="UTF-8">
+<br>
+{% if current_user.is_authenticated %}
+<p align="justify">
+    <a href="\0\topics" class="btn btn-secondary">Посмотреть темы сайтов</a>
+    <a href="\0\add_site" class="btn btn-secondary">Добавить сайт</a>
+    <a href="\0\add_topic" class="btn btn-secondary">Добавить тему</a></p>
+    {% if current_user.id > 1 %}
+        <select onchange="if (this.value) window.location.href = this.value" class="form-control" style="width:485px">
+            {% if id_all == 0 %}
+                <option selected value="/{{ 0 }}/{{ 0 }}">Показывать все сайты</option>
+                <option value="/{{ 0 }}/{{ 1 }}">Показывать только сайты добавленные мной</option>
+            {% else %}
+                <option value="/{{ 0 }}/{{ 0 }}">Показывать все сайты</option>
+                <option selected value="/{{ 0 }}/{{ 1 }}">Показывать только сайты добавленные мной</option>
+            {% endif %}
+        </select>
+    {% endif %}
+    <br>
+    <select onchange="if (this.value) window.location.href = this.value" class="form-control" size="4">
+        {% for key in name_topics %}
+            {% if id_topic == key %}
+                <option selected value="/{{ key }}/{{ id_all }}">{{ name_topics[key] }}</option>
+            {% else %}
+                <option value="/{{ key }}/{{ id_all }}">{{ name_topics[key] }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+{% else %}
+    <select onchange="if (this.value) window.location.href = this.value" class="form-control" size="4">
+        {% for key in name_topics %}
+            {% if id_topic == key %}
+                <option selected value="/{{ key }}/{{ id_all }}">{{ name_topics[key] }}</option>
+            {% else %}
+                <option value="/{{ key }}/{{ id_all }}">{{ name_topics[key] }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+{% endif %}
+<br>
+{% if id_topic == 0 %}
+    {% for key, val in dict_site.items() %}
+    <h4># {{ name_topics[key] }}</h4>
+        <div class="table_container">
+            <table class="my_table">
+                <tr class="my_row">
+                    <td class="title" width="400px" bgcolor="#dddddd">URL сайта</td>
+                    <td class="title" width="300px" bgcolor="#dddddd" align="center">Название сайта</td>
+                    <td class="title" width="550px" bgcolor="#dddddd" align="center">Описание сайта</td>
+                    {% if current_user.is_authenticated %}
+                        <td class="title" width="125px" bgcolor="#dddddd">Настройки</td>
+                    {% endif %}
+                </tr>
+                {% for p in val %}
+                <tr class="my_row">
+                    <td class="ordinary" bgcolor="#eeeeff"><a href="{{ p.site_address }}">{{ p.site_address }}</a></td>
+                    <td class="ordinary" bgcolor="#eeeeff" align="center">{{ p.site_name }}</td>
+                    <td class="ordinary" bgcolor="#eeeeff" align="center">{{ p.site_description }}</td>
+                    {% if current_user.is_authenticated %}
+                        <td class="ordinary" bgcolor="#eeeeff">
+                            {% if p.id_user == current_user.id %}
+                            <div>
+                                <a href="/site/{{ p.id }}" class="btn btn-outline-secondary">&#9998</a>
+                                <a href="/site_delete/{{ p.id }}" class="btn btn-outline-secondary">&#10060</a>
+                            </div>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <br>
+    {% endfor %}
+{% else %}
+    <h4># {{ name_topics[id_topic] }}</h4>
+        <div class="table_container">
+            <table class="my_table">
+                <tr class="my_row">
+                    <td class="title" width="400px" bgcolor="#dddddd">URL сайта</td>
+                    <td class="title" width="300px" bgcolor="#dddddd" align="center">Название сайта</td>
+                    <td class="title" width="550px" bgcolor="#dddddd" align="center">Описание сайта</td>
+                    {% if current_user.is_authenticated %}
+                        <td class="title" width="125px" bgcolor="#dddddd">Настройки</td>
+                    {% endif %}
+                </tr>
+                {% for p in dict_site[id_topic] %}
+                <tr class="my_row">
+                    <td class="ordinary" bgcolor="#eeeeff"><a href="{{ p.site_address }}">{{ p.site_address }}</a></td>
+                    <td class="ordinary" bgcolor="#eeeeff" align="center">{{ p.site_name }}</td>
+                    <td class="ordinary" bgcolor="#eeeeff" align="center">{{ p.site_description }}</td>
+                    {% if current_user.is_authenticated %}
+                        <td class="ordinary" bgcolor="#eeeeff">
+                            {% if p.id_user == current_user.id %}
+                            <div>
+                                <a href="/site/{{ p.id }}" class="btn btn-outline-secondary">&#9998</a>
+                                <a href="/site_delete/{{ p.id }}" class="btn btn-outline-secondary">&#10060</a>
+                            </div>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <br>
+{% endif %}
+{% if current_user.is_authenticated %}
+    {% if id_topic == 0 %}
+        <p><font size="4" color="grey" face="Comic Sans MS">Общее количество тем: {{count_sites[-1]}}, показано сайтов: {{count_sites[0]}}</font></p>
+    {% else %}
+        <p><font size="4" color="grey" face="Comic Sans MS">Общее количество тем: {{count_sites[-1]}}, показано сайтов: {{count_sites[id_topic]}}</font></p>
+    {% endif %}
+{% else %}
+    {% if id_topic == 0 %}
+        <p><font size="4" color="grey" face="Comic Sans MS">Общее количество тем: {{count_sites[-1]}}, показано сайтов: {{count_sites[0]}}</font></p>
+    {% else %}
+        <p><font size="4" color="grey" face="Comic Sans MS">Общее количество тем: {{count_sites[-1]}}, показано сайтов: {{count_sites[id_topic]}}</font></p>
+    {% endif %}
+    <p><font size="4" color="blue" face="Comic Sans MS">Сохрани лучшие сайты для себя!
+        Создавай свои темы, сохраняй ссылки на интересные сайты. Ваши темы и ссылки на сайты видны только вам!
+        Для создания и управления своей коллекцией ссылок необходима регистрация.</font></p>
+{% endif %}
+{% endblock %}

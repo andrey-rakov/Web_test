@@ -225,7 +225,7 @@ def main():
         for p in dict_site:
             count_sites[p] = len(dict_site[p])
         count_sites[-1] = len(dict_site)
-        return render_template("index.html", dict_site=dict_site, name_topics=name_topics,
+        return render_template("base.html", dict_site=dict_site, name_topics=name_topics,
                                title='Лучшие сайты, отобранные вручную!', id_topic=id_topic,
                                id_all=id_all, count_sites=count_sites, link=url_for('static', filename='css/style.css'))
 
